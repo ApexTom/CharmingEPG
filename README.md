@@ -17,6 +17,9 @@
 - CatchPlay（有台湾IP限制，如需代理请设置CATCHPLAY_PROXY）
 - SkyGo NZ
 - Telus TV+ （考虑数据量太大，只获取4天）
+- beIN SPORTS（多个区域抓取；频道名带区域前缀，例如 `[US] beIN SPORTS 3`）
+- Sling（非体育 3 天 EPG）
+- Sling Sports（体育 7 天 EPG）
 - CN
 
 ## Feature
@@ -49,6 +52,9 @@ EPG_ENABLE_4GTV=false
 EPG_ENABLE_CATCHPLAY=false
 EPG_ENABLE_SKYGONZ=false
 EPG_ENABLE_TELUS=false
+EPG_ENABLE_BEIN=false
+EPG_ENABLE_SLING=false
+EPG_ENABLE_SLING_SPORTS=false
 #支持`1`/`0` `yes`/`no` `true`/`false` `on`/`off`
 #这些配置已经在`docker-compose.example.yml`中列好，自行配置即可。
 
@@ -110,6 +116,9 @@ services:
       - EPG_ENABLE_CATCHPLAY=true
       - EPG_ENABLE_SKYGONZ=true
       - EPG_ENABLE_TELUS=true
+      - EPG_ENABLE_BEIN=true
+      - EPG_ENABLE_SLING=false
+      - EPG_ENABLE_SLING_SPORTS=false
       - SINGTEL_PROXY=socks5://user:pass@host:1080
       - CATCHPLAY_PROXY=socks5://user:pass@host:1080
       - TZ=Asia/Shanghai
@@ -145,6 +154,9 @@ docker run -d \
   -e EPG_ENABLE_CATCHPLAY=false \
   -e EPG_ENABLE_SKYGONZ=false \
   -e EPG_ENABLE_TELUS=false \
+  -e EPG_ENABLE_BEIN=false \
+  -e EPG_ENABLE_SLING=false \
+  -e EPG_ENABLE_SLING_SPORTS=false \
   -e SINGTEL_PROXY=socks5://user:pass@host:1080 \
   -e CATCHPLAY_PROXY=socks5://user:pass@host:1080 \
   charmingcheung000/charming-epg:latest
@@ -187,6 +199,9 @@ http://[ip]:[port]/epg/4gtv
 http://[ip]:[port]/epg/catchplay
 http://[ip]:[port]/epg/skygonz
 http://[ip]:[port]/epg/telus
+http://[ip]:[port]/epg/bein
+http://[ip]:[port]/epg/sling
+http://[ip]:[port]/epg/sling_sports
 http://[ip]:[port]/epg/cn
-http://[ip]:[port]/epg?platforms=tvb,nowtv,rthk,hoy,hami,astro,starhub,mewatch,singtel,unifitv,fengshows,4gtv,catchplay,skygonz,telus,cn
+http://[ip]:[port]/epg?platforms=tvb,nowtv,rthk,hoy,hami,astro,starhub,mewatch,singtel,unifitv,fengshows,4gtv,catchplay,skygonz,telus,bein,sling,sling_sports,cn
 ```

@@ -69,10 +69,19 @@ class Config:
         return proxy or None
 
     @classmethod
-    def platform_enabled(cls, platform: str) -> bool:
+    def platform_enabled(cls, platform: str, default: Optional[bool] = None) -> bool:
         """Check if a platform is enabled via environment variable"""
+        if default is None:
+            platform_config = next(
+                (
+                    item for item in cls.EPG_PLATFORMS
+                    if item["platform"].lower() == platform.lower()
+                ),
+                {},
+            )
+            default = platform_config.get("enabled_by_default", True)
         env_key = f"EPG_ENABLE_{platform.upper()}"
-        val = os.getenv(env_key, "true").strip().lower()
+        val = os.getenv(env_key, str(default)).strip().lower()
         return val in {"1", "true", "yes", "on"}
 
     @classmethod
@@ -97,6 +106,25 @@ class Config:
         {"platform": "catchplay", "name": "CatchPlay", "fetcher": "request_catchplay_epg"},
         {"platform": "skygonz", "name": "SkyGo NZ", "fetcher": "request_skygonz_epg"},
         {"platform": "telus", "name": "Telus", "fetcher": "request_telus_epg"},
+        {"platform": "bein", "name": "beIN SPORTS", "fetcher": "request_bein_epg"},
+        {
+            "platform": "claro",
+            "name": "Claro Premiere",
+            "fetcher": "request_claro_epg",
+            "enabled_by_default": False,
+        },
+        {
+            "platform": "sling",
+            "name": "Sling",
+            "fetcher": "request_sling_epg",
+            "enabled_by_default": False,
+        },
+        {
+            "platform": "sling_sports",
+            "name": "Sling Sports",
+            "fetcher": "request_sling_sports_epg",
+            "enabled_by_default": False,
+        },
         {"platform": "cn", "name": "CN", "fetcher": "request_cn_epg"},
     ]
 
@@ -105,7 +133,9 @@ class Config:
         """Get list of enabled platforms"""
         return [
             platform for platform in cls.EPG_PLATFORMS
-            if cls.platform_enabled(platform["platform"])
+            if cls.platform_enabled(
+                platform["platform"], platform.get("enabled_by_default", True)
+            )
         ]
 
     # User-Agent for HTTP requests
